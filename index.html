@@ -1,7 +1,7 @@
-
 <!doctype html>
 <html lang="ko">
 <head>
+<meta name="naver-site-verification" content="1b414c8bcf2e3d3731b9dddc50c98c5dacddec2a" />
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>달빛사주 | 무료 사주팔자</title>
@@ -54,6 +54,11 @@
   .reading{min-height:190px;padding:20px;border-radius:14px;background:#fff;border:1px solid var(--line)}.reading-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px}.reading h5{margin:0;font-size:18px}.score{flex:0 0 auto;display:flex;align-items:baseline;gap:2px;padding:8px 12px;border-radius:999px;background:#fff2e8;border:1px solid #efc7b3;color:var(--accent)}.score b{font-size:24px;line-height:1}.score span{font-size:12px}.scorebar{height:8px;background:#eee7dd;border-radius:999px;overflow:hidden;margin:8px 0 14px}.scorebar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--gold));border-radius:999px}.reading p{margin:0 0 10px;color:#5e544c;font-size:14px}.reading .fun{padding:12px 14px;border-radius:12px;background:#f7f0e7;color:#57483d;font-size:13px;font-weight:700}
   .luck-wrap{display:block}.luck-wrap.is-collapsed{display:none}.luck-toggle{border:1px solid #d8cec2;background:#fff;color:#51483f;border-radius:10px;padding:8px 12px;cursor:pointer;font-size:13px}.luck-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.luck-head h4{margin:0}.luck-line{display:grid;grid-template-columns:repeat(8,minmax(90px,1fr));gap:8px;overflow-x:auto;padding-bottom:4px}.luck{padding:12px 8px;border-radius:12px;background:#f7f1e8;text-align:center;min-width:90px;border:1px solid transparent;cursor:pointer;transition:.18s}.luck:hover{transform:translateY(-2px);border-color:#dfc9b8}.luck small{display:block;color:#8b8075}.luck strong{display:block;margin-top:4px;color:#4a3f36}.luck.hot,.luck.active{background:#fff1e8;border-color:#efc7b3}.luck.hot strong,.luck.active strong{color:var(--accent)}.luck-detail{margin-top:14px;padding:18px;border-radius:14px;background:#2f2621;color:#fff;display:none}.luck-detail.show{display:block}.luck-detail-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.luck-detail h5{margin:0 0 6px;font-size:18px}.luck-detail .period{color:#d7c7bb;font-size:12px}.luck-detail p{margin:12px 0 0;color:#eee4dc;font-size:14px}.luck-detail .mini-score{font-weight:900;font-size:22px;color:#ffd18b;white-space:nowrap}.luck-note{margin-top:10px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.08);font-size:13px;color:#ffe5bb}
   .feature-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}.feature{padding:20px}.feature b{display:block;margin-bottom:6px}.feature p{margin:0;color:var(--muted);font-size:13px}
+  .video-wrap{width:100%}
+  .video-wrap.is-vertical{width:min(360px,100%);margin:0 auto}
+  .video-box{position:relative;width:100%;padding-top:56.25%;border-radius:16px;overflow:hidden;background:#1c1512}
+  .video-wrap.is-vertical .video-box{padding-top:177.78%}
+  .video-box iframe,.video-box video{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
   footer{padding:26px 20px 44px;text-align:center;color:#8a8076;font-size:12px}
   @media(max-width:800px){.nav{display:none}.topbar{padding:0 18px}.hero{min-height:420px}.wrap{width:min(100% - 18px,1080px);margin-top:-24px}.input-card{padding:20px}.field,.field.wide{grid-column:span 6}.result-grid{grid-template-columns:1fr}.luck-line{grid-template-columns:repeat(3,1fr)}}
   @media(max-width:540px){.field,.field.wide{grid-column:1/-1}.pillars{grid-template-columns:repeat(2,1fr)}.feature-strip{grid-template-columns:1fr}.result-top{flex-direction:column}.actions{flex-direction:column}.actions button{width:100%}.hero h1{font-size:38px}.hero p{font-size:15px}}
@@ -147,6 +152,11 @@
     </form>
   </section>
 
+  <section class="card panel" id="promoVideoSection" style="margin-top:18px;display:none">
+    <h4 id="copyVideoTitle"></h4>
+    <div class="video-wrap" id="videoWrap"><div class="video-box" id="videoBox"></div></div>
+  </section>
+
   <section class="results" id="result">
     <div class="result-hero">
       <div class="result-top"><div><div class="result-name" id="rName"></div><h3 id="rTitle"></h3><div class="result-meta" id="rMeta"></div></div><div class="badge" id="rBadge"></div></div>
@@ -213,11 +223,14 @@ try{
   fbDb=null; fbStorage=null; fbReady=false;
 }
 function fbCopyDocRef(){ return fbDb.collection('dalbitSaju').doc('siteCopy'); }
-function fbImagePath(filename){ return 'dalbitSaju/images/'+Date.now()+'_'+String(filename||'image').replace(/[^\w.\-]/g,'_'); }
+function fbFilePath(folder,filename){ return 'dalbitSaju/'+folder+'/'+Date.now()+'_'+String(filename||'file').replace(/[^\w.\-]/g,'_'); }
 
 const COPY_STORAGE_KEY='dalbitSajuCopyV1';
 const DEFAULT_COPY={
   heroImageUrl:'',
+  videoTitle:'오늘의 영상',
+  videoType:'',
+  videoUrl:'',
   brandHtml:'달빛<span>사주</span>',
   eyebrow:'✦ 전통 명리 기반 · 간편 무료 풀이',
   heroTitleHtml:'나를 이해하는 가장 오래된 방법,<br>사주팔자',
@@ -329,6 +342,7 @@ function applySiteCopy(){
   setText('copyFeature3Desc',SITE_COPY.feature3Desc);
   setText('copyFooter',SITE_COPY.footer);
   applyHeroImage();
+  applyPromoVideo();
 }
 function applyHeroImage(){
   const heroEl=document.querySelector('.hero');
@@ -339,6 +353,86 @@ function applyHeroImage(){
   }else{
     heroEl.style.backgroundImage='';
   }
+}
+function youtubeEmbedUrl(input){
+  const raw=String(input||'').trim();
+  if(!raw) return '';
+  const m=raw.match(/(?:youtu\.be\/|[?&]v=|\/embed\/|\/shorts\/)([\w-]{6,})/);
+  if(m) return 'https://www.youtube-nocookie.com/embed/'+m[1];
+  if(/^[\w-]{6,}$/.test(raw)) return 'https://www.youtube-nocookie.com/embed/'+raw;
+  return '';
+}
+function isYoutubeShortUrl(input){
+  return /youtube\.com\/shorts\//i.test(String(input||''));
+}
+function ytPostMessage(iframe,func,args){
+  if(!iframe || !iframe.contentWindow) return;
+  iframe.contentWindow.postMessage(JSON.stringify({event:'command',func,args:args||[]}),'*');
+}
+// 요소가 화면에 절반 이상 보이면 onEnter, 벗어나면 onLeave를 호출합니다. (스크롤 시 자동재생/일시정지에 사용)
+function observeAutoplay(el,onEnter,onLeave){
+  if(!el) return;
+  if(!('IntersectionObserver' in window)){ onEnter(); return; }
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting && entry.intersectionRatio>=0.5) onEnter();
+      else onLeave();
+    });
+  },{threshold:[0,0.5,1]});
+  io.observe(el);
+}
+function applyPromoVideo(){
+  const section=document.getElementById('promoVideoSection');
+  const wrap=document.getElementById('videoWrap');
+  const box=document.getElementById('videoBox');
+  if(!section||!wrap||!box) return;
+  setText('copyVideoTitle',SITE_COPY.videoTitle||'');
+  box.innerHTML='';
+  wrap.classList.remove('is-vertical');
+
+  if(SITE_COPY.videoType==='youtube' && SITE_COPY.videoUrl){
+    const embed=youtubeEmbedUrl(SITE_COPY.videoUrl);
+    if(embed){
+      if(isYoutubeShortUrl(SITE_COPY.videoUrl)) wrap.classList.add('is-vertical');
+      const iframe=document.createElement('iframe');
+      const baseSrc=embed+(embed.includes('?')?'&':'?')+'mute=1&playsinline=1&enablejsapi=1&rel=0';
+      iframe.title=SITE_COPY.videoTitle||'홍보 영상';
+      iframe.referrerPolicy='strict-origin-when-cross-origin';
+      iframe.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.allowFullscreen=true;
+      iframe.loading='lazy';
+      box.appendChild(iframe);
+
+      let ytLoaded=false;
+      observeAutoplay(box,
+        ()=>{ // 화면에 보이기 시작하면 재생(음소거 상태로 시작 — 브라우저 정책상 음소거해야 자동재생이 허용됩니다)
+          if(!ytLoaded){ iframe.src=baseSrc+'&autoplay=1'; ytLoaded=true; }
+          else ytPostMessage(iframe,'playVideo');
+        },
+        ()=>{ if(ytLoaded) ytPostMessage(iframe,'pauseVideo'); } // 화면에서 벗어나면 일시정지
+      );
+      section.style.display='';
+      return;
+    }
+  }else if(SITE_COPY.videoType==='file' && SITE_COPY.videoUrl){
+    const video=document.createElement('video');
+    video.src=SITE_COPY.videoUrl;
+    video.controls=true;
+    video.playsInline=true;
+    video.muted=true; // 음소거 상태로 시작 — 컨트롤에서 사용자가 직접 소리를 켤 수 있습니다.
+    video.loop=true;
+    video.addEventListener('loadedmetadata',()=>{
+      wrap.classList.toggle('is-vertical', video.videoHeight>video.videoWidth);
+    });
+    box.appendChild(video);
+    observeAutoplay(box,
+      ()=>{ video.play().catch(()=>{}); },
+      ()=>{ video.pause(); }
+    );
+    section.style.display='';
+    return;
+  }
+  section.style.display='none';
 }
 applySiteCopy();
 
@@ -649,6 +743,36 @@ document.getElementById('sajuForm').addEventListener('submit',e=>{
     </div>
 
     <div class="admin-section">
+      <h4>영상 관리</h4>
+      <div class="admin-note" id="adminVideoFbNote">유튜브 링크(권장, 저장 공간을 쓰지 않음)를 넣거나, 직접 촬영한 영상 파일을 업로드할 수 있습니다.</div>
+      <div class="admin-grid">
+        <div class="admin-field"><label>영상 제목</label><input data-admin-key="videoTitle"></div>
+        <div class="admin-field admin-full">
+          <label>영상 종류</label>
+          <div class="seg" style="max-width:460px">
+            <input type="radio" name="videoType" id="videoTypeNone" value="" checked><label for="videoTypeNone">영상 없음</label>
+            <input type="radio" name="videoType" id="videoTypeYoutube" value="youtube"><label for="videoTypeYoutube">유튜브 링크</label>
+            <input type="radio" name="videoType" id="videoTypeFile" value="file"><label for="videoTypeFile">파일 업로드</label>
+          </div>
+        </div>
+        <div class="admin-field admin-full" id="videoYoutubeField" style="display:none">
+          <label>유튜브 영상 URL 또는 ID</label>
+          <input id="videoYoutubeUrl" placeholder="https://www.youtube.com/watch?v=... 또는 영상 ID">
+        </div>
+        <div class="admin-field admin-full" id="videoFileField" style="display:none">
+          <label>영상 파일 업로드 (mp4 권장. 용량이 클수록 방문자 로딩이 느려지고 Firebase 사용량도 늘어납니다)</label>
+          <div style="margin-bottom:8px"><span id="videoFileStatus" style="font-size:12px;color:#7e756d">등록된 영상 파일이 없습니다.</span></div>
+          <input type="file" id="videoFileInput" accept="video/*">
+          <div id="videoUploadProgressWrap" style="margin-top:8px;display:none">
+            <div style="height:8px;background:#eee7dd;border-radius:999px;overflow:hidden">
+              <div id="videoUploadProgressBar" style="height:100%;width:0%;background:linear-gradient(90deg,#c76a46,#cfa75d)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-section">
       <h4>이미지 관리</h4>
       <div class="admin-note" id="adminFbStatusNote">이미지는 Firebase Storage에 업로드되어 다른 기기·브라우저에서도 동일하게 보입니다. Firebase 연결에 문제가 있어도 문구 저장(이 브라우저 기준)은 항상 그대로 동작합니다.</div>
       <div class="admin-grid">
@@ -731,12 +855,24 @@ document.getElementById('sajuForm').addEventListener('submit',e=>{
 
   // undefined: 이번에 이미지 변경 없음 / null: 기본값으로 되돌리기 선택 / string: 새로 업로드된 URL
   let pendingHeroImageUrl;
+  // undefined: 이번에 새로 업로드한 파일 없음(기존 값 유지 또는 라디오 선택으로 결정) / string: 새로 업로드된 영상 URL
+  let pendingVideoUrl;
 
   if(fbStatusNote){
     fbStatusNote.textContent = fbReady
       ? '✅ Firebase에 연결되어 있습니다. 이미지와 문구가 다른 기기·브라우저에도 동기화됩니다.'
       : '⚠️ Firebase에 연결되지 않았습니다(네트워크 또는 설정 문제). 이미지 업로드는 사용할 수 없고, 문구 저장은 이 브라우저에만 저장됩니다.';
   }
+
+  function updateVideoFieldsVisibility(){
+    const checked=document.querySelector('input[name="videoType"]:checked');
+    const type=checked?checked.value:'';
+    document.getElementById('videoYoutubeField').style.display = type==='youtube' ? '' : 'none';
+    document.getElementById('videoFileField').style.display = type==='file' ? '' : 'none';
+  }
+  document.querySelectorAll('input[name="videoType"]').forEach(r=>{
+    r.addEventListener('change',updateVideoFieldsVisibility);
+  });
 
   const qsa=(s,root=document)=>[...root.querySelectorAll(s)];
 
@@ -749,6 +885,7 @@ document.getElementById('sajuForm').addEventListener('submit',e=>{
   function openPanel(){
     buildAdminEditors();
     setupImageUpload();
+    setupVideoUpload();
     fillAdminForm();
     panelOverlay.classList.add('show');
     closeLogin();
@@ -819,6 +956,19 @@ document.getElementById('sajuForm').addEventListener('submit',e=>{
       preview.style.display='none';
       status.textContent='기본 이미지를 사용 중입니다.';
     }
+
+    pendingVideoUrl=undefined;
+    const videoTypeVal=current.videoType||'';
+    qsa('input[name="videoType"]').forEach(r=>{ r.checked=(r.value===videoTypeVal); });
+    document.getElementById('videoYoutubeUrl').value = videoTypeVal==='youtube' ? (current.videoUrl||'') : '';
+    const videoFileInput=document.getElementById('videoFileInput');
+    if(videoFileInput) videoFileInput.value='';
+    const videoFileStatus=document.getElementById('videoFileStatus');
+    videoFileStatus.textContent = (videoTypeVal==='file' && current.videoUrl)
+      ? '등록된 영상 파일이 있습니다.'
+      : '등록된 영상 파일이 없습니다.';
+    document.getElementById('videoUploadProgressWrap').style.display='none';
+    updateVideoFieldsVisibility();
   }
 
   function collectAdminForm(){
@@ -833,6 +983,20 @@ document.getElementById('sajuForm').addEventListener('submit',e=>{
     });
     if(pendingHeroImageUrl===null) current.heroImageUrl='';
     else if(typeof pendingHeroImageUrl==='string') current.heroImageUrl=pendingHeroImageUrl;
+
+    const videoTypeChecked=document.querySelector('input[name="videoType"]:checked');
+    const chosenVideoType=videoTypeChecked?videoTypeChecked.value:'';
+    if(chosenVideoType==='youtube'){
+      current.videoType='youtube';
+      current.videoUrl=(document.getElementById('videoYoutubeUrl').value||'').trim();
+    }else if(chosenVideoType==='file'){
+      current.videoType='file';
+      if(typeof pendingVideoUrl==='string') current.videoUrl=pendingVideoUrl;
+      // 새로 업로드하지 않았다면 loadCopy()로 불러온 기존 videoUrl(current.videoUrl)이 그대로 유지됩니다.
+    }else{
+      current.videoType='';
+      current.videoUrl='';
+    }
     return current;
   }
 
@@ -854,7 +1018,7 @@ document.getElementById('sajuForm').addEventListener('submit',e=>{
       }
       status.textContent='업로드 중...';
       try{
-        const ref=fbStorage.ref().child(fbImagePath(file.name));
+        const ref=fbStorage.ref().child(fbFilePath('images',file.name));
         await ref.put(file);
         const url=await ref.getDownloadURL();
         pendingHeroImageUrl=url;
@@ -874,6 +1038,55 @@ document.getElementById('sajuForm').addEventListener('submit',e=>{
       preview.removeAttribute('src');
       preview.style.display='none';
       status.textContent='저장 시 기본 이미지로 되돌아갑니다.';
+    });
+  }
+
+  function setupVideoUpload(){
+    const videoInput=document.getElementById('videoFileInput');
+    const videoStatus=document.getElementById('videoFileStatus');
+    const progressWrap=document.getElementById('videoUploadProgressWrap');
+    const progressBar=document.getElementById('videoUploadProgressBar');
+    if(!videoInput || videoInput.dataset.bound==='1') return;
+    videoInput.dataset.bound='1';
+
+    videoInput.addEventListener('change', (e)=>{
+      const file=e.target.files && e.target.files[0];
+      if(!file) return;
+      if(!fbReady || !fbStorage){
+        videoStatus.textContent='Firebase에 연결되어 있지 않아 영상을 저장할 수 없습니다. (문구 저장은 정상 동작합니다)';
+        e.target.value='';
+        return;
+      }
+      videoStatus.textContent='업로드 중... 0%';
+      progressWrap.style.display='block';
+      progressBar.style.width='0%';
+      const ref=fbStorage.ref().child(fbFilePath('videos',file.name));
+      const task=ref.put(file);
+      task.on('state_changed',
+        (snap)=>{
+          const pct=Math.round((snap.bytesTransferred/snap.totalBytes)*100);
+          videoStatus.textContent='업로드 중... '+pct+'%';
+          progressBar.style.width=pct+'%';
+        },
+        (err)=>{
+          console.warn('[달빛사주] 영상 업로드 실패', err);
+          videoStatus.textContent='영상 업로드에 실패했습니다: '+(err && err.message ? err.message : '알 수 없는 오류');
+          progressWrap.style.display='none';
+          e.target.value='';
+        },
+        async ()=>{
+          try{
+            const url=await task.snapshot.ref.getDownloadURL();
+            pendingVideoUrl=url;
+            videoStatus.textContent='업로드 완료! 아래 "변경사항 저장"을 눌러야 최종 반영됩니다.';
+          }catch(err){
+            console.warn('[달빛사주] 영상 URL 조회 실패', err);
+            videoStatus.textContent='업로드 후 주소 조회에 실패했습니다.';
+          }
+          progressWrap.style.display='none';
+          e.target.value='';
+        }
+      );
     });
   }
 
